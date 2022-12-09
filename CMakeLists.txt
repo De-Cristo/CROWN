@@ -196,9 +196,11 @@ function(find_python_package PYPINAME NAME MIN_VERSION)
             message(FATAL_ERROR "Failed to import ${PYPINAME} or get version.")
         endif()
     endif()
-    if(PACKAGE_VERSION VERSION_LESS MIN_VERSION)
-        message(FATAL_ERROR "The version of Python package ${PYPINAME} is too old (found ${PACKAGE_VERSION}, require at least ${MIN_VERSION}).")
-    endif()
+# xiaohu: since 202210 GitPython provides a git with version "git" not a number
+# this fails the check in CMake, thus comment it out
+#    if(PACKAGE_VERSION VERSION_LESS MIN_VERSION)
+#        message(FATAL_ERROR "The version of Python package ${PYPINAME} is too old (found ${PACKAGE_VERSION}, require at least ${MIN_VERSION}).")
+#    endif()
     message(STATUS "Found Python package ${PYPINAME} (require ${MIN_VERSION}, found ${PACKAGE_VERSION})")
 endfunction()
 

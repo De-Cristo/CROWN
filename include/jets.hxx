@@ -5,6 +5,11 @@ namespace jet {
 ROOT::RDF::RNode
 VetoOverlappingJets(ROOT::RDF::RNode df, const std::string &output_col,
                     const std::string &jet_eta, const std::string &jet_phi,
+                    const std::string &muon_eta, const std::string &muon_phi, const std::string &muon_mask,
+                    const float &deltaRmin);
+ROOT::RDF::RNode
+VetoOverlappingJets(ROOT::RDF::RNode df, const std::string &output_col,
+                    const std::string &jet_eta, const std::string &jet_phi,
                     const std::string &p4_1, const std::string &p4_2,
                     const float &deltaRmin);
 ROOT::RDF::RNode

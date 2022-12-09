@@ -14,6 +14,7 @@
 /// are needed for every event
 namespace quantities {
 
+
 /// Function to calculate the pt from a given lorentz vector and add it to the
 /// dataframe
 ///
@@ -454,6 +455,26 @@ ROOT::RDF::RNode pdgid(ROOT::RDF::RNode df, const std::string &outputname,
         },
         {pairname, pdgidcolumn});
 }
+
+// vhmm extend to number of objects, not only leptons
+/// Function to determine number of good objects
+///
+/// \param[in] df the input dataframe
+/// \param[out] outputname the name of the produced quantity
+/// \param[in] goodleptons name of the vector that contains a lepton mask of
+/// good leptons, its length of non-zero values constitutes the output quantity
+///
+/// \return a dataframe containing the number of good leptons in an event
+ROOT::RDF::RNode NumberOfGoodObjects(ROOT::RDF::RNode df,
+                                     const std::string &outputname,
+                                     const std::string &goodmask) {
+    return df.Define(outputname,
+                     [](const ROOT::RVec<int> &goodmask) {
+                         return (int)ROOT::VecOps::Nonzero(goodmask).size();
+                     },
+                     {goodmask});
+}
+
 /// Function to determine number of good leptons
 ///
 /// \param[in] df the input dataframe

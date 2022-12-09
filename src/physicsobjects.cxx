@@ -26,6 +26,41 @@
 /// multiple cuts can be combined by multiplying masks using
 /// physicsobject::CombineMasks.
 namespace physicsobject {
+
+/// [begin] a couple of general functions added in developing vhmm analysis
+///
+/// Function to select objects above a threshold on a variable, using
+/// basefunctions::FilterMin
+///
+/// \param[in] df the input dataframe
+/// \param[in] quantity name of the varible column in the NanoAOD
+/// \param[out] maskname the name of the mask to be added as column to the
+/// dataframe \param[in] the lower threshold on the variable
+///
+/// \return a dataframe containing the new mask
+ROOT::RDF::RNode CutVarMin(ROOT::RDF::RNode df, const std::string &quantity,
+                       const std::string &maskname, const float &threshold) {
+    auto df1 =
+        df.Define(maskname, basefunctions::FilterMin(threshold), {quantity});
+    return df1;
+}
+/// Function to select objects below a threshold on a variable, using
+/// basefunctions::FilterMax
+///
+/// \param[in] df the input dataframe
+/// \param[in] quantity name of the variable column in the NanoAOD
+/// \param[out] maskname the name of the mask to be added as column to the
+/// dataframe \param[in] the upper threshold on the variable
+///
+/// \return a dataframe containing the new mask
+ROOT::RDF::RNode CutVarMax(ROOT::RDF::RNode df, const std::string &quantity,
+                       const std::string &maskname, const float &threshold) {
+    auto df1 =
+        df.Define(maskname, basefunctions::FilterMax(threshold), {quantity});
+    return df1;
+}
+/// [end] a couple of general functions added in developing vhmm analysis
+
 /// Function to select objects above a pt threshold, using
 /// basefunctions::FilterMin
 ///

@@ -31,3 +31,13 @@ Documentation
 --------------
 
 The full documentation can be found at https://crown.readthedocs.io/en/latest/.
+
+
+Doc for Hmm from PKU
+--------------
+
+git clone --recursive git@github.com:xiaohu-cern/CROWN.git
+
+source init.sh hmm
+
+

@@ -2,6 +2,10 @@
 #define GUARD_PHYSICSOBJECTS_H
 
 namespace physicsobject {
+ROOT::RDF::RNode CutVarMin(ROOT::RDF::RNode df, const std::string &quantity,
+                       const std::string &maskname, const float &threshold);
+ROOT::RDF::RNode CutVarMax(ROOT::RDF::RNode df, const std::string &quantity,
+                       const std::string &maskname, const float &threshold);
 ROOT::RDF::RNode CutPt(ROOT::RDF::RNode df, const std::string &quantity,
                        const std::string &maskname, const float &ptThreshold);
 ROOT::RDF::RNode CutEta(ROOT::RDF::RNode df, const std::string &quantity,

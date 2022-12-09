@@ -15,6 +15,61 @@
 #include <typeinfo>
 
 namespace jet {
+
+// vhmm extend to N particle overlap removal
+/// Function to veto jets overlapping with particle candidates
+///
+/// \param[in] df the input dataframe
+/// \param[out] output_col the name of the produced mask \param[in] jet_eta name
+/// of the jet etas \param[in] jet_phi name of the jet phis \param[in] p4_1 four
+/// vector of the first particle candidate \param[in] p4_2 four vector of the
+/// second particle candidate \param[in] deltaRmin minimum required distance in
+/// dR between jets and particle candidates
+///
+/// \return a dataframe containing the new mask
+ROOT::RDF::RNode
+VetoOverlappingJets(ROOT::RDF::RNode df, const std::string &output_col,
+                    const std::string &jet_eta, const std::string &jet_phi,
+                    const std::string &muon_eta, const std::string &muon_phi, const std::string &muon_mask,
+                    const float &deltaRmin) {
+    auto df1 = df.Define(
+        output_col,
+        [deltaRmin](const ROOT::RVec<float> &jet_eta,
+                    const ROOT::RVec<float> &jet_phi,
+                    const ROOT::RVec<float> &muon_eta,
+                    const ROOT::RVec<float> &muon_phi,
+                    const ROOT::RVec<int> &muon_mask) {
+            Logger::get("VetoOverlappingJets (N particles)")
+                ->debug("Checking jets");
+            ROOT::RVec<int> mask(jet_eta.size(), 1);
+            for (std::size_t idx = 0; idx < mask.size(); ++idx) {
+                ROOT::Math::RhoEtaPhiVectorF jet(0, jet_eta.at(idx),
+                                                 jet_phi.at(idx));
+                Logger::get("VetoOverlappingJets (N particles)")
+                    ->debug("Jet {}:  Eta: {} Phi: {} ", idx, jet.Eta(), jet.Phi());
+                int _mdx = 0;
+                for(std::size_t mdx = 0; mdx < muon_mask.size(); ++mdx){
+                    if( muon_mask[mdx] ) continue; // only check with the selected muons
+                    ROOT::Math::RhoEtaPhiVectorF muon(0, muon_eta.at(mdx), muon_phi.at(mdx));
+                    Logger::get("VetoOverlappingJets (N particles)")
+                        ->debug("Lepton {}:  Eta: {} Phi: {} ", _mdx, muon.Eta(), muon.Phi());
+                    auto deltaR = ROOT::Math::VectorUtil::DeltaR(jet, muon);
+                    Logger::get("VetoOverlappingJets (N particles)")
+                        ->debug("DeltaR {}", deltaR);
+                    mask[idx] = mask[idx]&&(deltaR > deltaRmin);
+                    ++_mdx;
+                }
+            }
+            Logger::get("VetoOverlappingJets (N particles)")
+                ->debug("vetomask due to overlap: {}", mask);
+            return mask;
+        },
+        {jet_eta, jet_phi, muon_eta, muon_phi, muon_mask});
+    return df1;
+}
+
+
+
 /// Function to veto jets overlapping with particle candidates
 ///
 /// \param[in] df the input dataframe
@@ -107,6 +162,7 @@ VetoOverlappingJets(ROOT::RDF::RNode df, const std::string &output_col,
     return df1;
 }
 
+// vhmm: this works for any object
 /// Function to determine pt order of jets
 ///
 /// \param[in] df the input dataframe
